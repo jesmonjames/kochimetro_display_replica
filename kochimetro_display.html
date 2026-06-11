@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kochi Metro Display</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+*{box-sizing:border-box;}
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#f0f0f0;
+    font-family:Arial,sans-serif;
+}
+.metro-display{
+    width:100vw;
+    height:200px;
+    background:#fff;
+    border:3px solid #333;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+.header-bar{
+    background:#02B0AF;
+    color:#fff;
+    padding:4px 10px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    font-weight:bold;
+    font-size:clamp(10px, 1.5vw, 14px);
+    line-height:1.3;
+    border-bottom:2px solid #fff;
+    flex-shrink:0;
+}
+.station-container{
+    position:relative;
+    flex:1;
+    overflow:hidden;
+}
+/* Row of dots — pinned near the bottom */
+.stations-row{
+    display:flex;
+    align-items:center;
+    position:absolute;
+    bottom:50px;
+    left:0.5vw;
+    right:0.5vw;
+}
+/* Track line through the exact center of all dots */
+.stations-row::after{
+    content:'';
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    height:3px;
+    background:#02B0AF;
+    z-index:0;
+}
+/* Each station cell: just centred in its flex slot */
+.station{
+    flex:1 1 0;
+    min-width:0;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+/* Label floats absolutely above the dot, rotates from its bottom-left corner */
+.station-label{
+    position:absolute;
+    bottom:calc(100% + 5px);
+    left:50%;
+    transform:rotate(-45deg);
+    transform-origin:bottom left;
+    font-size:clamp(6px, 0.85vw, 10px);
+    white-space:nowrap;
+    line-height:1;
+    color:#222;
+    pointer-events:none;
+}
+/* Dot sits in normal flow — all on the same line */
+.tracker-dot{
+    width:clamp(8px, 1.2vw, 13px);
+    height:clamp(8px, 1.2vw, 13px);
+    background:#02B0AF;
+    border-radius:50%;
+    flex-shrink:0;
+    position:relative;
+    z-index:1;
+    transition:background 0.4s, box-shadow 0.4s;
+}
+.tracker-dot.current{
+    background:orange;
+    box-shadow:0 0 7px 2px rgba(255,165,0,0.65);
+}
+.gap-info{
+    position:absolute;
+    left:100%;
+    top:50%;
+    font-size:clamp(6px, 0.75vw, 10px);
+    color:#444;
+    text-align:center;
+    line-height:1.1;
+    pointer-events:none;
+    white-space:nowrap;
+    z-index:2;
+    font-weight:bold;
+}
+.station:nth-child(odd) .gap-info {
+    transform:translate(-50%, 10px);
+}
+.station:nth-child(even) .gap-info {
+    transform:translate(-50%, 28px);
+}
+</style>
+</head>
+<body>
+<div class="metro-display">
+  <div class="header-bar">
+    <div id="date"></div>
+    <div id="time"></div>
+  </div>
+
+  <div class="station-container">
+    <div class="stations-row">
+      <div class="station"><div class="station-label">Tripunithura Railway Station</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.2 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">S N Junction</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Vadakekotta</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.1 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Petta</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.2 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Thykoodam</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Vyttila</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.3 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Elamkulam</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Kadavanthra</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.1 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Ernakulam South</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.2 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Maharaja's College</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">MG Road</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.2 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Town Hall</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Kaloor</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.1 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">JLN Stadium</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Palarivattom</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.1 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Changampuzha Park</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.2 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Edapally</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.1 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Pathadipalam</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.3 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">CUSAT</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Kalamassery Town</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.2 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Muttom</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Ambattukavu</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Companypady</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.0 km</span><br><span class="time" data-orig="2 min">2 min</span></div></div>
+      <div class="station"><div class="station-label">Pulinchodu</div><div class="tracker-dot"></div><div class="gap-info"><span class="dist">1.8 km</span><br><span class="time" data-orig="3 min">3 min</span></div></div>
+      <div class="station"><div class="station-label">Aluva</div><div class="tracker-dot"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateTime(){
+  const now=new Date();
+  $('#date').text(now.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}));
+  $('#time').text(now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+}
+updateTime();
+setInterval(updateTime,1000);
+
+
+let currentIndex=0;
+const stations=$('.station');
+const dots=$('.tracker-dot');
+let state = 'ARRIVED';
+let timeRemaining = 4;
+
+function speak(text){
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel();
+    const msg=new SpeechSynthesisUtterance(text+' has arrived. Doors opening');
+    msg.lang='en-IN';
+    speechSynthesis.speak(msg);
+    setTimeout(()=>{
+      speechSynthesis.speak(new SpeechSynthesisUtterance('Doors closing'));
+    },3500);
+  }
+}
+
+function updateSimulation(){
+  if (state === 'ARRIVED') {
+    if (timeRemaining === 4) {
+      dots.removeClass('current');
+      dots.eq(currentIndex).addClass('current');
+      const stationName=stations.eq(currentIndex).find('.station-label').text();
+      speak(stationName);
+    }
+    timeRemaining--;
+    if (timeRemaining <= 0) {
+      state = 'TRAVELING';
+      timeRemaining = 12; // 12 seconds simulation travel time
+    }
+  } else if (state === 'TRAVELING') {
+    if (currentIndex < stations.length - 1) {
+      const timeSpan = stations.eq(currentIndex).find('.gap-info .time');
+      if (timeSpan.length) {
+         timeSpan.html(`<strong style="color:#ff8c00">${timeRemaining}s</strong>`);
+      }
+    }
+    timeRemaining--;
+    if (timeRemaining <= 0) {
+      if (currentIndex < stations.length - 1) {
+         const timeSpan = stations.eq(currentIndex).find('.gap-info .time');
+         if (timeSpan.length) {
+            timeSpan.html(timeSpan.attr('data-orig'));
+         }
+      }
+      currentIndex = (currentIndex + 1) % dots.length;
+      state = 'ARRIVED';
+      timeRemaining = 4;
+    }
+  }
+}
+
+updateSimulation();
+setInterval(updateSimulation,1000);
+</script>
+</body>
+</html>
